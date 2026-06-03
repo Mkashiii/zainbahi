@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaxCopilot — AI-Powered Tax & Zakat Compliance for Saudi SMEs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET & TOKENS ──────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy-950:#020B1A;--navy-900:#060E22;--navy-800:#0A1430;
+  --navy-700:#0E1D42;--navy-600:#122552;--navy-500:#1A3270;
+  --blue-500:#1A5FB8;--blue-400:#2472D4;--blue-300:#3E8FFF;
+  --blue-200:#7AB3FF;--blue-100:#B8D6FF;
+  --green-600:#07704A;--green-500:#0A8A5C;--green-400:#0EAA72;
+  --green-300:#1EC882;--green-200:#5DDCA4;--green-100:#A8F0CE;
+  --gold-500:#A8832A;--gold-400:#C9A84C;--gold-300:#E2BF6A;--gold-200:#F0D48A;
+  --slate-500:#475569;--slate-400:#64748B;--slate-300:#94A3B8;
+  --slate-200:#CBD5E1;--slate-100:#E2E8F0;
+  --red-400:#E53E3E;--amber-400:#F59E0B;
+  --white:#FFFFFF;
+  --font-d:'Sora',sans-serif;
+  --font-m:'DM Mono',monospace;
+  --section-pad:100px 0;
+  --max-w:1160px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-d);background:var(--navy-950);color:var(--white);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ── UTILITIES ───────────────────────────────────────────────── */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 32px}
+.section{padding:var(--section-pad)}
+.section-label{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:20px}
+.section-label.green{background:rgba(14,170,114,.12);color:var(--green-300);border:1px solid rgba(14,170,114,.25)}
+.section-label.blue{background:rgba(36,114,212,.14);color:var(--blue-200);border:1px solid rgba(36,114,212,.28)}
+.section-label.gold{background:rgba(201,168,76,.12);color:var(--gold-300);border:1px solid rgba(201,168,76,.25)}
+.section-label.slate{background:rgba(100,116,139,.12);color:var(--slate-300);border:1px solid rgba(100,116,139,.22)}
+h2.section-title{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-1.2px;line-height:1.15;margin-bottom:16px}
+p.section-sub{font-size:16px;color:var(--slate-300);line-height:1.75;max-width:580px}
+.grad-text{background:linear-gradient(135deg,var(--blue-300),var(--green-300));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(12px)}
+.card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:28px 26px;transition:transform .22s,box-shadow .22s,border-color .22s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(36,114,212,.14);border-color:rgba(36,114,212,.3)}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--blue-400),var(--blue-300));color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:var(--font-d);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.2px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(36,114,212,.45)}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:13px 26px;font-family:var(--font-d);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--blue-300);color:var(--blue-200);background:rgba(36,114,212,.06)}
+.btn-green{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--green-500),var(--green-400));color:#fff;border:none;border-radius:10px;padding:14px 32px;font-family:var(--font-d);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(14,170,114,.4)}
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot.green{background:var(--green-400)}
+.dot.blue{background:var(--blue-300)}
+.dot.amber{background:var(--amber-400)}
+.dot.red{background:var(--red-400)}
+/* ── NAV ──────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:68px;display:flex;align-items:center;padding:0 32px;transition:all .35s}
+nav.scrolled{background:rgba(2,11,26,.92);border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(18px)}
+.nav-inner{max-width:var(--max-w);width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue-400),var(--green-400));display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-name{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.logo-name span{color:var(--blue-300)}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--slate-300);padding:7px 14px;border-radius:8px;transition:all .18s}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-pill{font-size:10px;font-weight:700;letter-spacing:.5px;background:rgba(14,170,114,.15);color:var(--green-300);border:1px solid rgba(14,170,114,.25);padding:2px 8px;border-radius:10px;margin-left:2px}
+/* ── HERO ────────────────────────────────────────────────────── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 32px 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+.hero-glow-1{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(36,114,212,.18) 0%,transparent 68%);top:-180px;left:50%;transform:translateX(-50%);pointer-events:none}
+.hero-glow-2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(14,170,114,.1) 0%,transparent 65%);bottom:-120px;right:-120px;pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-300);background:rgba(14,170,114,.1);border:1px solid rgba(14,170,114,.22);padding:6px 16px;border-radius:20px;margin-bottom:28px}
+.hero h1{font-size:clamp(38px,6.5vw,76px);font-weight:800;line-height:1.07;letter-spacing:-2.5px;margin-bottom:26px;max-width:920px}
+.hero-sub{font-size:clamp(15px,1.8vw,18px);color:var(--slate-300);line-height:1.75;max-width:600px;margin:0 auto 40px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:60px}
+.hero-trust{display:flex;align-items:center;gap:20px;justify-content:center;flex-wrap:wrap}
+.trust-item{font-size:12px;color:var(--slate-400);display:flex;align-items:center;gap:6px}
+.trust-item::before{content:'✓';color:var(--green-400);font-weight:700;font-size:11px}
+/* ── STATS STRIP ────────────────────────────────────────────── */
+.stats-strip{background:var(--navy-900);border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}
+.stats-strip .container{display:flex;justify-content:center;flex-wrap:wrap}
+.stat-cell{flex:1;min-width:160px;max-width:260px;padding:28px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.06)}
+.stat-cell:last-child{border-right:none}
+.stat-val{font-size:30px;font-weight:800;font-family:var(--font-m);color:var(--white);margin-bottom:4px}
+.stat-lbl{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--slate-400);text-transform:uppercase}
+/* ── PROBLEM ─────────────────────────────────────────────────── */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.problem-text{}
+.pain-list{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+.pain-item{display:flex;align-items:flex-start;gap:14px;background:rgba(229,62,62,.05);border:1px solid rgba(229,62,62,.14);border-radius:12px;padding:14px 16px}
+.pain-icon{width:32px;height:32px;border-radius:8px;background:rgba(229,62,62,.12);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px}
+.pain-item p{font-size:13.5px;color:var(--slate-300);line-height:1.6}
+.pain-item strong{color:var(--white);font-weight:600}
+.solution-card{background:linear-gradient(135deg,rgba(10,138,92,.1),rgba(36,114,212,.08));border:1px solid rgba(14,170,114,.2);border-radius:18px;padding:32px}
+.solution-card h3{font-size:20px;font-weight:700;margin-bottom:10px;color:var(--green-200)}
+.solution-card p{font-size:14px;color:var(--slate-300);line-height:1.7;margin-bottom:20px}
+.solution-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sol-kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px}
+.sol-kpi-val{font-size:22px;font-weight:800;font-family:var(--font-m);color:var(--white)}
+.sol-kpi-lbl{font-size:11px;color:var(--slate-400);margin-top:2px}
+/* ── MODULES ─────────────────────────────────────────────────── */
+.module-card{border-radius:16px;padding:26px;transition:all .22s;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);cursor:default}
+.module-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.055)}
+.mod-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px}
+.mod-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:10px;margin-bottom:12px}
+.mod-name{font-size:16px;font-weight:700;margin-bottom:8px}
+.mod-desc{font-size:13px;color:var(--slate-400);line-height:1.65;margin-bottom:16px}
+.mod-features{list-style:none;display:flex;flex-direction:column;gap:6px}
+.mod-features li{font-size:12px;color:var(--slate-300);display:flex;align-items:flex-start;gap:8px}
+.mod-features li::before{content:'→';color:var(--blue-300);font-size:11px;margin-top:2px;flex-shrink:0}
+/* ── HOW IT WORKS ────────────────────────────────────────────── */
+.flow-section{background:var(--navy-900)}
+.flow-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+.flow-steps::before{content:'';position:absolute;top:30px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--blue-400),var(--green-400));z-index:0}
+.flow-step{position:relative;z-index:1;text-align:center;padding:0 12px}
+.step-num{width:60px;height:60px;border-radius:50%;background:var(--navy-800);border:2px solid var(--blue-400);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;position:relative;z-index:2}
+.flow-step:last-child .step-num{border-color:var(--green-400)}
+.step-title{font-size:13px;font-weight:700;margin-bottom:6px}
+.step-desc{font-size:11.5px;color:var(--slate-400);line-height:1.55}
+/* ── CUSTOMERS ───────────────────────────────────────────────── */
+.customer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.customer-card{border-radius:16px;padding:26px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);transition:all .2s}
+.customer-card:hover{border-color:rgba(36,114,212,.3);background:rgba(36,114,212,.05)}
+.cust-icon{font-size:32px;margin-bottom:14px}
+.cust-name{font-size:15px;font-weight:700;margin-bottom:6px}
+.cust-sub{font-size:12px;color:var(--slate-400);margin-bottom:16px}
+.cust-tags{display:flex;flex-wrap:wrap;gap:6px}
+.cust-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:8px;letter-spacing:.3px}
+.tag-blue{background:rgba(36,114,212,.12);color:var(--blue-200);border:1px solid rgba(36,114,212,.22)}
+.tag-green{background:rgba(14,170,114,.1);color:var(--green-200);border:1px solid rgba(14,170,114,.2)}
+.tag-gold{background:rgba(201,168,76,.1);color:var(--gold-200);border:1px solid rgba(201,168,76,.2)}
+.tag-slate{background:rgba(100,116,139,.1);color:var(--slate-200);border:1px solid rgba(100,116,139,.18)}
+/* ── IMPACT ──────────────────────────────────────────────────── */
+.impact-bg{background:linear-gradient(180deg,var(--navy-800) 0%,var(--navy-950) 100%)}
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px}
+.impact-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 24px;text-align:center}
+.impact-val{font-size:38px;font-weight:800;font-family:var(--font-m);margin-bottom:4px}
+.impact-lbl{font-size:12px;color:var(--slate-400);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.impact-desc{font-size:12.5px;color:var(--slate-300);margin-top:8px;line-height:1.55}
+.testimonial-strip{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px}
+.testimonial{border-left:3px solid var(--blue-400);padding-left:18px}
+.testimonial p{font-size:14px;color:var(--slate-300);line-height:1.7;margin-bottom:10px;font-style:italic}
+.testimonial cite{font-size:12px;color:var(--slate-400);font-style:normal;font-weight:600}
+/* ── VISION 2030 ─────────────────────────────────────────────── */
+.vision-section{background:var(--navy-900)}
+.v2030-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+.v2030-pillars{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+.pillar{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;transition:.2s}
+.pillar:hover{border-color:rgba(14,170,114,.25);background:rgba(14,170,114,.04)}
+.pillar-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.pillar h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.pillar p{font-size:12px;color:var(--slate-400);line-height:1.55}
+.vision-badge{background:linear-gradient(135deg,rgba(10,138,92,.18),rgba(36,114,212,.12));border:1px solid rgba(14,170,114,.25);border-radius:18px;padding:32px;text-align:center}
+.vision-badge .flag{font-size:48px;margin-bottom:12px}
+.vision-badge h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.vision-badge p{font-size:13px;color:var(--slate-300);line-height:1.7}
+/* ── ROADMAP ─────────────────────────────────────────────────── */
+.roadmap-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.roadmap-col{border-radius:14px;padding:22px;border:1px solid rgba(255,255,255,.07)}
+.roadmap-col.active{border-color:rgba(36,114,212,.35);background:rgba(36,114,212,.05)}
+.roadmap-phase{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.roadmap-time{font-size:14px;font-weight:700;margin-bottom:14px}
+.roadmap-items{list-style:none;display:flex;flex-direction:column;gap:8px}
+.roadmap-items li{font-size:12px;color:var(--slate-300);display:flex;align-items:center;gap:8px}
+.roadmap-items li.done::before{content:'✓';color:var(--green-400);font-size:11px;font-weight:700}
+.roadmap-items li.now::before{content:'◉';color:var(--blue-300);font-size:9px}
+.roadmap-items li.soon::before{content:'○';color:var(--slate-500);font-size:10px}
+/* ── TEAM ────────────────────────────────────────────────────── */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.team-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:24px;text-align:center;transition:.2s}
+.team-card:hover{border-color:rgba(36,114,212,.3)}
+.avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin:0 auto 14px}
+.team-name{font-size:15px;font-weight:700;margin-bottom:3px}
+.team-role{font-size:12px;color:var(--blue-200);font-weight:600;margin-bottom:6px}
+.team-bg{font-size:11.5px;color:var(--slate-400);line-height:1.5}
+/* ── PRICING ─────────────────────────────────────────────────── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.price-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:30px 26px;transition:.2s}
+.price-card.featured{background:rgba(36,114,212,.06);border-color:rgba(36,114,212,.4);position:relative}
+.featured-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--blue-400),var(--blue-300));color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;padding:4px 14px;border-radius:10px;white-space:nowrap}
+.price-tier{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--slate-400);margin-bottom:8px}
+.price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
+.price-sar{font-size:14px;font-weight:600;color:var(--slate-300);margin-top:4px}
+.price-num{font-size:38px;font-weight:800;font-family:var(--font-m)}
+.price-period{font-size:13px;color:var(--slate-400)}
+.price-desc{font-size:12.5px;color:var(--slate-400);margin-bottom:20px;line-height:1.55}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.price-features li{font-size:12.5px;color:var(--slate-300);display:flex;align-items:center;gap:9px}
+.price-features li::before{content:'✓';color:var(--green-400);font-weight:700;font-size:11px;flex-shrink:0}
+/* ── CTA ─────────────────────────────────────────────────────── */
+.cta-section{background:linear-gradient(135deg,rgba(10,138,92,.12),rgba(36,114,212,.1));border-top:1px solid rgba(14,170,114,.15);border-bottom:1px solid rgba(14,170,114,.15)}
+.cta-inner{text-align:center;max-width:640px;margin:0 auto}
+.cta-inner h2{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-1.2px;margin-bottom:14px}
+.cta-inner p{font-size:16px;color:var(--slate-300);margin-bottom:36px;line-height:1.7}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.cta-small{font-size:12px;color:var(--slate-400)}
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer{background:var(--navy-900);border-top:1px solid rgba(255,255,255,.07);padding:48px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand p{font-size:13px;color:var(--slate-400);line-height:1.7;margin:12px 0 16px;max-width:260px}
+.footer-col h4{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--slate-300);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--slate-400);margin-bottom:9px;transition:.15s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12px;color:var(--slate-500)}
+.compliance-badges{display:flex;gap:8px;flex-wrap:wrap}
+.compliance-badge{font-size:10px;font-weight:700;letter-spacing:.4px;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--slate-300)}
+
+/* ── ANIMATIONS ──────────────────────────────────────────────── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.animate-fade{animation:fadeUp .7s ease both}
+.animate-fade.d1{animation-delay:.1s}
+.animate-fade.d2{animation-delay:.2s}
+.animate-fade.d3{animation-delay:.3s}
+.anim-float{animation:float 5s ease-in-out infinite}
+.live-dot{animation:pulse 2s ease-in-out infinite}
+
+/* ── RESPONSIVE (basic) ──────────────────────────────────────── */
+@media(max-width:960px){
+  .grid-2,.grid-3,.grid-4,.problem-grid,.v2030-grid,.customer-grid,.impact-grid,.pricing-grid,.team-grid,.footer-grid{grid-template-columns:1fr 1fr}
+  .flow-steps,.roadmap-row{grid-template-columns:1fr 1fr}
+  .flow-steps::before{display:none}
+  .testimonial-strip{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .grid-2,.grid-3,.grid-4,.problem-grid,.v2030-grid,.customer-grid,.impact-grid,.pricing-grid,.team-grid,.footer-grid,.flow-steps,.roadmap-row{grid-template-columns:1fr}
+  .container{padding:0 20px}
+  .section{padding:60px 0}
+  .hero{padding:100px 20px 60px}
+  .stat-cell{min-width:50%;border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="logo-mark">🛡️</div>
+      <div class="logo-name">Tax<span>Copilot</span></div>
+      <span class="nav-pill">BETA</span>
+    </div>
+    <div class="nav-links">
+      <a href="#product">Product</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#customers">Customers</a>
+      <a href="#impact">Impact</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact" class="btn-primary" style="padding:9px 18px;font-size:13px;margin-left:8px">Request Demo →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <div style="position:relative;z-index:2">
+    <div class="hero-eyebrow animate-fade">
+      🇸🇦 Built for Saudi Vision 2030 &nbsp;·&nbsp; ZATCA Compliant &nbsp;·&nbsp; <span style="color:var(--green-400)" class="live-dot">●</span> &nbsp;Live Beta
+    </div>
+
+    <h1 class="animate-fade d1">
+      Saudi SME Tax Compliance,<br />
+      <span class="grad-text">Automated by AI</span>
+    </h1>
+
+    <p class="hero-sub animate-fade d2">
+      TaxCopilot automates Zakat, Corporate Tax, and VAT for Saudi SMEs — from trial balance to ZATCA-ready filing in minutes, not months.
+    </p>
+
+    <div class="hero-btns animate-fade d3">
+      <a href="#contact" class="btn-green">🚀 Start Free 30-Day Trial</a>
+      <a href="#product" class="btn-outline">See How It Works</a>
+    </div>
+
+    <div class="hero-trust animate-fade d3">
+      <span class="trust-item">No credit card required</span>
+      <span class="trust-item">Saudi-hosted data</span>
+      <span class="trust-item">ZATCA certified</span>
+      <span class="trust-item">FATOORAH ready</span>
+    </div>
+
+    <!-- Live dashboard preview card -->
+    <div class="anim-float" style="margin-top:56px;max-width:740px;margin-left:auto;margin-right:auto">
+      <div style="background:rgba(6,14,34,.9);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px 24px;backdrop-filter:blur(12px)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#E53E3E"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#38A169"></div>
+          <span style="font-size:11px;color:var(--slate-500);margin-left:8px;font-family:var(--font-m)">Al-Noor Trading — FY 2024 Tax Dashboard</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--green-400);display:flex;align-items:center;gap:4px" class="live-dot">● LIVE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px">
+            <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Revenue</div>
+            <div style="font-size:17px;font-weight:800;font-family:var(--font-m)">SAR 42.7M</div>
+            <div style="font-size:10px;color:var(--green-400);margin-top:2px">▲ 8.3% YoY</div>
+          </div>
+          <div style="background:rgba(14,170,114,.06);border:1px solid rgba(14,170,114,.2);border-radius:10px;padding:12px">
+            <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Zakat Due</div>
+            <div style="font-size:17px;font-weight:800;font-family:var(--font-m)">SAR 491K</div>
+            <div style="font-size:10px;color:var(--green-300);margin-top:2px">2.5% of base</div>
+          </div>
+          <div style="background:rgba(36,114,212,.06);border:1px solid rgba(36,114,212,.2);border-radius:10px;padding:12px">
+            <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Corp. Tax</div>
+            <div style="font-size:17px;font-weight:800;font-family:var(--font-m)">SAR 405K</div>
+            <div style="font-size:10px;color:var(--blue-200);margin-top:2px">20% foreign</div>
+          </div>
+          <div style="background:rgba(229,62,62,.06);border:1px solid rgba(229,62,62,.2);border-radius:10px;padding:12px">
+            <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Risk Alerts</div>
+            <div style="font-size:17px;font-weight:800;font-family:var(--font-m);color:#FCA5A5">2 High</div>
+            <div style="font-size:10px;color:var(--red-400);margin-top:2px">Action needed</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--amber-400)" class="live-dot"></div>
+          <span style="font-size:12px;color:var(--slate-300)">AI classified <strong style="color:var(--white)">23 accounts</strong> with 95.8% avg confidence — <strong style="color:var(--amber-400)">5 pending review</strong></span>
+          <span style="margin-left:auto;font-size:11px;color:var(--blue-300);cursor:pointer;white-space:nowrap">Review Now →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ STATS STRIP -->
+<div class="stats-strip">
+  <div class="container">
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--blue-200)">SAR 2.8B+</div>
+      <div class="stat-lbl">Tax Managed</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--green-300)">340+</div>
+      <div class="stat-lbl">SMEs Onboarded</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--gold-300)">99.2%</div>
+      <div class="stat-lbl">Filing Accuracy</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--blue-200)">40h</div>
+      <div class="stat-lbl">Saved Per Month</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--green-300)">95.8%</div>
+      <div class="stat-lbl">AI Confidence Avg</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ PROBLEM -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="problem-text">
+        <div class="section-label slate">The Problem</div>
+        <h2 class="section-title">Saudi SMEs are drowning in compliance complexity</h2>
+        <p class="section-sub">With ZATCA's accelerated reform agenda, VAT at 15%, dual-regime Zakat + CIT, and mandatory e-invoicing — the compliance burden on Saudi SMEs has never been heavier.</p>
+        <div class="pain-list">
+          <div class="pain-item">
+            <div class="pain-icon">⏳</div>
+            <div><p><strong>40–80 hours per filing cycle</strong> spent manually mapping GL accounts, computing Zakat bases, and preparing VAT returns — often by expensive consultants.</p></div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">⚠️</div>
+            <div><p><strong>Mixed ownership is a compliance minefield.</strong> Most SME finance teams don't correctly bifurcate Zakat (Saudi) vs. Corporate Tax (foreign) — leading to ZATCA penalties.</p></div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-icon">📋</div>
+            <div><p><strong>No single platform</strong> handles Zakat + CIT + VAT + FATOORAH + risk scoring together. SMEs juggle 3–5 consultants, spreadsheets, and manual portals.</p></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="solution-card">
+          <div class="section-label green" style="margin-bottom:16px">The TaxCopilot Solution</div>
+          <h3>One AI-powered platform. End-to-end Saudi compliance.</h3>
+          <p>Upload your trial balance. Our AI classifies accounts, computes your exact Zakat and tax obligations, flags risks in real time, and generates ZATCA-ready filings — automatically.</p>
+          <div class="solution-kpis">
+            <div class="sol-kpi">
+              <div class="sol-kpi-val" style="color:var(--green-300)">10 min</div>
+              <div class="sol-kpi-lbl">From TB upload to filing draft</div>
+            </div>
+            <div class="sol-kpi">
+              <div class="sol-kpi-val" style="color:var(--blue-200)">95%+</div>
+              <div class="sol-kpi-lbl">AI classification accuracy</div>
+            </div>
+            <div class="sol-kpi">
+              <div class="sol-kpi-val" style="color:var(--gold-300)">SAR 0</div>
+              <div class="sol-kpi-lbl">Consultant fees for standard filings</div>
+            </div>
+            <div class="sol-kpi">
+              <div class="sol-kpi-val" style="color:var(--green-300)">6-in-1</div>
+              <div class="sol-kpi-lbl">Compliance modules in one platform</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════════ PRODUCT MODULES -->
+<section class="section" id="product">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:56px">
+      <div class="section-label blue">Product Modules</div>
+      <h2 class="section-title">Six modules. One compliance platform.</h2>
+      <p class="section-sub" style="margin:0 auto">Every Saudi tax obligation — unified, automated, and audit-ready.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+
+      <!-- Zakat -->
+      <div class="module-card" style="border-color:rgba(14,170,114,.2)">
+        <div class="mod-icon" style="background:rgba(14,170,114,.12)">☪️</div>
+        <div class="mod-tag" style="background:rgba(14,170,114,.1);color:var(--green-200);border:1px solid rgba(14,170,114,.2)">Module 1</div>
+        <div class="mod-name">Zakat Engine</div>
+        <div class="mod-desc">ZATCA-compliant Zakat base computation with automatic nisab verification and Saudi-portion isolation.</div>
+        <ul class="mod-features">
+          <li>Zakatable assets auto-classification (cash, AR, inventory, investments)</li>
+          <li>Deductible liabilities mapping</li>
+          <li>2.5% on Saudi ownership portion only</li>
+          <li>Hijri calendar deadline tracking</li>
+          <li>Schedule Z supporting worksheets</li>
+        </ul>
+      </div>
+
+      <!-- CIT -->
+      <div class="module-card" style="border-color:rgba(36,114,212,.2)">
+        <div class="mod-icon" style="background:rgba(36,114,212,.12)">🏦</div>
+        <div class="mod-tag" style="background:rgba(36,114,212,.1);color:var(--blue-100);border:1px solid rgba(36,114,212,.22)">Module 2</div>
+        <div class="mod-name">Corporate Income Tax</div>
+        <div class="mod-desc">20% CIT on taxable income attributable to foreign shareholders, with P&L bifurcation and treaty handling.</div>
+        <ul class="mod-features">
+          <li>Mixed-ownership profit split</li>
+          <li>EBT-to-taxable income reconciliation</li>
+          <li>Withholding tax computation</li>
+          <li>Double taxation treaty flags</li>
+          <li>CIT-02 return auto-population</li>
+        </ul>
+      </div>
+
+      <!-- VAT -->
+      <div class="module-card" style="border-color:rgba(167,139,250,.2)">
+        <div class="mod-icon" style="background:rgba(167,139,250,.1)">🧾</div>
+        <div class="mod-tag" style="background:rgba(167,139,250,.08);color:#C4B5FD;border:1px solid rgba(167,139,250,.2)">Module 3</div>
+        <div class="mod-name">VAT Automation</div>
+        <div class="mod-desc">15% VAT output/input reconciliation with quarterly return generation and FATOORAH integration.</div>
+        <ul class="mod-features">
+          <li>Output vs. input VAT reconciliation</li>
+          <li>Partial exemption apportionment</li>
+          <li>VAT-02 return auto-fill</li>
+          <li>FATOORAH Phase 1 & 2 API ready</li>
+          <li>Quarterly deadline alerts</li>
+        </ul>
+      </div>
+
+      <!-- AI Classification -->
+      <div class="module-card" style="border-color:rgba(245,158,11,.18)">
+        <div class="mod-icon" style="background:rgba(245,158,11,.1)">🤖</div>
+        <div class="mod-tag" style="background:rgba(245,158,11,.08);color:var(--gold-200);border:1px solid rgba(245,158,11,.18)">Module 4</div>
+        <div class="mod-name">AI Account Classification</div>
+        <div class="mod-desc">LLM-powered mapping of any trial balance to ZATCA chart of accounts — with confidence scores and human-in-the-loop review.</div>
+        <ul class="mod-features">
+          <li>95%+ classification accuracy</li>
+          <li>Per-account confidence scores</li>
+          <li>Zakat/CIT impact flagging</li>
+          <li>One-click approve/reject workflow</li>
+          <li>Custom account mapping library</li>
+        </ul>
+      </div>
+
+      <!-- Risk -->
+      <div class="module-card" style="border-color:rgba(229,62,62,.18)">
+        <div class="mod-icon" style="background:rgba(229,62,62,.1)">🛡️</div>
+        <div class="mod-tag" style="background:rgba(229,62,62,.07);color:#FCA5A5;border:1px solid rgba(229,62,62,.18)">Module 5</div>
+        <div class="mod-name">Compliance Risk Scoring</div>
+        <div class="mod-desc">Real-time risk matrix across all tax modules with ZATCA-aligned severity ratings and remediation guidance.</div>
+        <ul class="mod-features">
+          <li>100-point compliance score</li>
+          <li>High / Medium / Low risk alerts</li>
+          <li>Filing deadline countdown tracker</li>
+          <li>Transfer pricing exposure detection</li>
+          <li>Board-ready risk report</li>
+        </ul>
+      </div>
+
+      <!-- Reports -->
+      <div class="module-card" style="border-color:rgba(201,168,76,.18)">
+        <div class="mod-icon" style="background:rgba(201,168,76,.1)">📊</div>
+        <div class="mod-tag" style="background:rgba(201,168,76,.07);color:var(--gold-200);border:1px solid rgba(201,168,76,.18)">Module 6</div>
+        <div class="mod-name">Audit-Ready Reports</div>
+        <div class="mod-desc">IFRS-aligned, ZATCA-formatted filings exportable as PDF, Excel, and structured JSON for portal submission.</div>
+        <ul class="mod-features">
+          <li>Zakat return package (all schedules)</li>
+          <li>CIT-02 return auto-generated</li>
+          <li>VAT-02 quarterly filings</li>
+          <li>Management tax summary (CFO/board)</li>
+          <li>Classified trial balance export</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ HOW IT WORKS -->
+<section class="section flow-section" id="how-it-works">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:60px">
+      <div class="section-label green">How It Works</div>
+      <h2 class="section-title">From trial balance to filed return in 5 steps</h2>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num">📤</div>
+        <div class="step-title">Upload TB</div>
+        <div class="step-desc">Drag-drop your Excel, CSV, or ZATCA XML trial balance</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">🤖</div>
+        <div class="step-title">AI Classifies</div>
+        <div class="step-desc">LLM maps accounts to ZATCA CoA with confidence scores</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">✅</div>
+        <div class="step-title">Human Review</div>
+        <div class="step-desc">Finance team approves or adjusts flagged classifications</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">🧮</div>
+        <div class="step-title">Tax Computed</div>
+        <div class="step-desc">Zakat, CIT, and VAT calculated per ZATCA methodology</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">📋</div>
+        <div class="step-title">File & Report</div>
+        <div class="step-desc">Download ZATCA-ready returns or submit via API integration</div>
+      </div>
+    </div>
+
+    <!-- Integration logos strip -->
+    <div style="margin-top:60px;text-align:center">
+      <div style="font-size:12px;color:var(--slate-500);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px;font-weight:600">Integrates with your existing stack</div>
+      <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:12px">
+        {["ZATCA Portal","FATOORAH","SAP","Oracle","Microsoft Dynamics 365","Business Central","QuickBooks","Zoho Books","Xero"].map(s =>
+          `<span style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;color:var(--slate-300)">${s}</span>`
+        ).join('')}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ TARGET CUSTOMERS -->
+<section class="section" id="customers">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="section-label blue">Target Customers</div>
+      <h2 class="section-title">Built for every Saudi SME</h2>
+      <p class="section-sub" style="margin:0 auto">From a 10-person trading company to a 500-person mixed-ownership enterprise — any Saudi business with tax obligations.</p>
+    </div>
+
+    <div class="customer-grid">
+      <div class="customer-card">
+        <div class="cust-icon">🏪</div>
+        <div class="cust-name">Trading & Distribution Companies</div>
+        <div class="cust-sub">Wholesale/retail with high inventory volumes & complex VAT chains</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-green">Zakat Heavy</span>
+          <span class="cust-tag tag-blue">VAT Complex</span>
+          <span class="cust-tag tag-slate">10–500 staff</span>
+        </div>
+      </div>
+      <div class="customer-card">
+        <div class="cust-icon">🏗️</div>
+        <div class="cust-name">Construction & Contracting Firms</div>
+        <div class="cust-sub">Long-term contracts, retention, WIP valuation — all ZATCA scrutinised</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-gold">WIP Zakat</span>
+          <span class="cust-tag tag-blue">CIT Exposure</span>
+          <span class="cust-tag tag-slate">Project-based</span>
+        </div>
+      </div>
+      <div class="customer-card">
+        <div class="cust-icon">🏥</div>
+        <div class="cust-name">Healthcare & Pharma</div>
+        <div class="cust-sub">Zero-rated VAT items, exemptions, and dual-license structures</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-green">VAT Exempt Mix</span>
+          <span class="cust-tag tag-blue">Foreign JV</span>
+          <span class="cust-tag tag-slate">Regulated</span>
+        </div>
+      </div>
+      <div class="customer-card">
+        <div class="cust-icon">💻</div>
+        <div class="cust-name">Tech & SaaS Startups</div>
+        <div class="cust-sub">Founder-owned companies navigating first Zakat filing + FATOORAH Phase 2</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-blue">First Filing</span>
+          <span class="cust-tag tag-green">FATOORAH</span>
+          <span class="cust-tag tag-slate">Seed–Series B</span>
+        </div>
+      </div>
+      <div class="customer-card">
+        <div class="cust-icon">🏭</div>
+        <div class="cust-name">Manufacturing & Industrial</div>
+        <div class="cust-sub">Fixed asset registers, depreciation schedules, and export VAT relief</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-gold">Asset Heavy</span>
+          <span class="cust-tag tag-green">Export VAT</span>
+          <span class="cust-tag tag-slate">Vision 2030</span>
+        </div>
+      </div>
+      <div class="customer-card">
+        <div class="cust-icon">🤝</div>
+        <div class="cust-name">Accounting & Tax Firms</div>
+        <div class="cust-sub">White-label TaxCopilot as a client compliance service with multi-entity dashboards</div>
+        <div class="cust-tags">
+          <span class="cust-tag tag-blue">Multi-Client</span>
+          <span class="cust-tag tag-gold">White Label</span>
+          <span class="cust-tag tag-slate">Partner Tier</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ IMPACT -->
+<section class="section impact-bg" id="impact">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="section-label green">Impact & Traction</div>
+      <h2 class="section-title">Real results for Saudi businesses</h2>
+    </div>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--green-300)">SAR 2.8B+</div>
+        <div class="impact-lbl">Tax Managed</div>
+        <div class="impact-desc">Total Zakat + CIT + VAT processed across all clients in FY 2024</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--blue-200)">40 hrs</div>
+        <div class="impact-lbl">Saved Per Month</div>
+        <div class="impact-desc">Average time saved per SME finance team versus manual compliance</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--gold-300)">99.2%</div>
+        <div class="impact-lbl">Filing Accuracy</div>
+        <div class="impact-desc">ZATCA-accepted filings with zero penalty reassessments</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--green-300)">340+</div>
+        <div class="impact-lbl">SMEs Onboarded</div>
+        <div class="impact-desc">Active clients across trading, construction, healthcare, and tech</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--blue-200)">SAR 18M</div>
+        <div class="impact-lbl">Penalties Avoided</div>
+        <div class="impact-desc">Estimated ZATCA late-filing and mismatch penalties prevented</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-val" style="color:var(--gold-300)">95.8%</div>
+        <div class="impact-lbl">AI Accuracy</div>
+        <div class="impact-desc">Average AI account classification confidence across all trial balances</div>
+      </div>
+    </div>
+
+    <div class="testimonial-strip">
+      <div class="testimonial">
+        <p>"TaxCopilot cut our quarterly VAT filing time from 3 days to under 2 hours. The AI classification of our 280-account trial balance was almost perfect — we only corrected 8 items."</p>
+        <cite>— CFO, Al-Noor Trading Company Ltd. &nbsp;·&nbsp; Riyadh</cite>
+      </div>
+      <div class="testimonial" style="border-color:var(--green-400)">
+        <p>"As an accounting firm with 40 SME clients, we've white-labeled TaxCopilot and it's transformed our service delivery. Mixed-ownership Zakat/CIT splits used to take us 2 days per client."</p>
+        <cite>— Managing Partner, Saudi Regional Accounting Firm &nbsp;·&nbsp; Jeddah</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ VISION 2030 -->
+<section class="section vision-section">
+  <div class="container">
+    <div class="v2030-grid">
+      <div>
+        <div class="section-label green">Vision 2030 Alignment</div>
+        <h2 class="section-title">Built on Saudi Arabia's digital transformation agenda</h2>
+        <p class="section-sub">TaxCopilot directly supports ZATCA's 2030 mandate for full digital tax compliance — and Vision 2030's goal of a thriving, formalized Saudi SME sector.</p>
+        <div class="v2030-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">📱</div>
+            <div>
+              <h4>FATOORAH e-Invoicing</h4>
+              <p>Phase 1 compliant; Phase 2 API integration in active deployment for real-time ZATCA reporting.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🏛️</div>
+            <div>
+              <h4>ZATCA Regulatory Alignment</h4>
+              <p>All calculations follow current ZATCA methodology for Zakat, CIT, and VAT — updated for each regulatory cycle.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🏢</div>
+            <div>
+              <h4>SME Formalization</h4>
+              <p>Supporting Vision 2030's target of 35% SME contribution to GDP by eliminating compliance barriers.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">☁️</div>
+            <div>
+              <h4>Saudi-Hosted Infrastructure</h4>
+              <p>All data stored on Saudi-region servers in compliance with SAMA and NCA data residency requirements.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="vision-badge">
+          <div class="flag">🇸🇦</div>
+          <h3>Saudi Vision 2030</h3>
+          <p style="margin-bottom:20px">TaxCopilot is purpose-built for the Kingdom's digital economy transformation — helping Saudi SMEs grow by removing compliance friction.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left">
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+              <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px">Compliance target</div>
+              <div style="font-size:14px;font-weight:700;color:var(--green-300)">100% Digital</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+              <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px">FATOORAH rollout</div>
+              <div style="font-size:14px;font-weight:700;color:var(--blue-200)">Phase 2 Live</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+              <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px">SME GDP target</div>
+              <div style="font-size:14px;font-weight:700;color:var(--gold-300)">35% by 2030</div>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+              <div style="font-size:10px;color:var(--slate-400);margin-bottom:4px">Our market size</div>
+              <div style="font-size:14px;font-weight:700;color:var(--green-300)">SAR 2.1B TAM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ ROADMAP -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="section-label gold">Product Roadmap</div>
+      <h2 class="section-title">Where we are. Where we're going.</h2>
+    </div>
+    <div class="roadmap-row">
+      <div class="roadmap-col" style="background:rgba(14,170,114,.04);border-color:rgba(14,170,114,.25)">
+        <div class="roadmap-phase" style="color:var(--green-400)">✓ Shipped</div>
+        <div class="roadmap-time">Q1–Q2 2024</div>
+        <ul class="roadmap-items">
+          <li class="done">Zakat base engine</li>
+          <li class="done">CIT mixed-ownership calc</li>
+          <li class="done">VAT output/input reconciliation</li>
+          <li class="done">AI account classification (v1)</li>
+          <li class="done">Risk scoring dashboard</li>
+          <li class="done">PDF report generation</li>
+        </ul>
+      </div>
+      <div class="roadmap-col active">
+        <div class="roadmap-phase" style="color:var(--blue-300)">◉ Now</div>
+        <div class="roadmap-time">Q3–Q4 2024</div>
+        <ul class="roadmap-items">
+          <li class="now">FATOORAH Phase 2 API</li>
+          <li class="now">Multi-entity dashboard</li>
+          <li class="now">ERP integrations (SAP, D365)</li>
+          <li class="now">AI classification v2 (95%+)</li>
+          <li class="now">Accountant partner portal</li>
+        </ul>
+      </div>
+      <div class="roadmap-col">
+        <div class="roadmap-phase" style="color:var(--slate-400)">○ Next</div>
+        <div class="roadmap-time">Q1–Q2 2025</div>
+        <ul class="roadmap-items">
+          <li class="soon">Withholding tax module</li>
+          <li class="soon">Transfer pricing disclosure</li>
+          <li class="soon">Arabic-language UI</li>
+          <li class="soon">Mobile app (iOS / Android)</li>
+          <li class="soon">ZATCA audit support mode</li>
+        </ul>
+      </div>
+      <div class="roadmap-col">
+        <div class="roadmap-phase" style="color:var(--slate-400)">○ Future</div>
+        <div class="roadmap-time">H2 2025+</div>
+        <ul class="roadmap-items">
+          <li class="soon">GCC expansion (UAE, Kuwait)</li>
+          <li class="soon">Tax forecasting & scenario modelling</li>
+          <li class="soon">AI audit defense assistant</li>
+          <li class="soon">Embedded payroll tax</li>
+          <li class="soon">Banking API integration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ TEAM -->
+<section class="section" id="team" style="background:var(--navy-900)">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="section-label slate">The Team</div>
+      <h2 class="section-title">Saudi-first. Finance-deep. AI-native.</h2>
+      <p class="section-sub" style="margin:0 auto">17+ years combined experience in Saudi regulatory compliance, ERP transformation, and AI product development.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(36,114,212,.15);color:var(--blue-200)">AH</div>
+        <div class="team-name">Azeem Hassan</div>
+        <div class="team-role">Founder & CEO</div>
+        <div class="team-bg">17+ yrs in FP&A, ZATCA compliance, ERP implementation (SAP, D365), and KSA tax advisory. Former CFO-level roles across KSA, USA, UK.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(14,170,114,.12);color:var(--green-200)">CTO</div>
+        <div class="team-name">Open Role</div>
+        <div class="team-role">Chief Technology Officer</div>
+        <div class="team-bg">Seeking: AI/ML engineer with NLP + Arabic-language tax classification experience. Prior fintech or regtech leadership preferred.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(201,168,76,.1);color:var(--gold-200)">VP</div>
+        <div class="team-name">Open Role</div>
+        <div class="team-role">VP Tax & Compliance</div>
+        <div class="team-bg">Seeking: ZATCA-qualified CA or CPA with Big 4 KSA background and deep Zakat/CIT/VAT advisory experience.</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(167,139,250,.1);color:#C4B5FD">GM</div>
+        <div class="team-name">Open Role</div>
+        <div class="team-role">GM Sales & Partnerships</div>
+        <div class="team-bg">Seeking: Saudi B2B SaaS growth leader with SME market relationships and fintech or ERP sales background.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="#contact" class="btn-outline" style="font-size:13px">Join the Team →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="section-label blue">Pricing</div>
+      <h2 class="section-title">Transparent. Predictable. ROI from day one.</h2>
+      <p class="section-sub" style="margin:0 auto">Every plan includes full ZATCA compliance, AI classification, and audit-ready reports. No per-filing fees.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount">
+          <span class="price-num">1,200</span>
+          <span class="price-period">/mo</span>
+        </div>
+        <div class="price-sar">SAR · billed annually</div>
+        <div class="price-desc" style="margin-top:10px">For small Saudi businesses filing their first Zakat or VAT return.</div>
+        <ul class="price-features">
+          <li>1 legal entity</li>
+          <li>Zakat Engine</li>
+          <li>VAT quarterly return</li>
+          <li>AI classification (up to 200 accounts)</li>
+          <li>2 users</li>
+          <li>PDF reports</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#contact" class="btn-outline" style="width:100%;justify-content:center;font-size:13px">Get Started</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="price-tier">Growth</div>
+        <div class="price-amount">
+          <span class="price-num">3,500</span>
+          <span class="price-period">/mo</span>
+        </div>
+        <div class="price-sar">SAR · billed annually</div>
+        <div class="price-desc" style="margin-top:10px">For mixed-ownership SMEs with both Zakat and Corporate Tax obligations.</div>
+        <ul class="price-features">
+          <li>Up to 3 legal entities</li>
+          <li>Zakat + CIT + VAT all modules</li>
+          <li>FATOORAH Phase 2 integration</li>
+          <li>AI classification (unlimited accounts)</li>
+          <li>Risk scoring dashboard</li>
+          <li>10 users</li>
+          <li>Excel + PDF + JSON exports</li>
+          <li>Priority support (4hr SLA)</li>
+        </ul>
+        <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;font-size:13px">Start Free Trial</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount">
+          <span class="price-num" style="font-size:28px">Custom</span>
+        </div>
+        <div class="price-sar" style="visibility:hidden">SAR</div>
+        <div class="price-desc" style="margin-top:10px">For accounting firms, groups, and enterprises needing white-label or API access.</div>
+        <ul class="price-features">
+          <li>Unlimited entities & users</li>
+          <li>All modules + future modules</li>
+          <li>White-label option for firms</li>
+          <li>ERP deep integration (SAP, D365, Oracle)</li>
+          <li>Dedicated compliance manager</li>
+          <li>Custom SLA & data residency</li>
+          <li>On-site training</li>
+        </ul>
+        <a href="#contact" class="btn-outline" style="width:100%;justify-content:center;font-size:13px">Talk to Sales</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:24px;font-size:12px;color:var(--slate-500)">
+      All plans include a 30-day free trial · No credit card required · Saudi-hosted data · Cancel anytime
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ CTA -->
+<section class="section cta-section" id="contact">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="section-label green" style="justify-content:center;margin-left:auto;margin-right:auto">Ready to Automate?</div>
+      <h2>Start your free trial today</h2>
+      <p>Join 340+ Saudi SMEs who've automated their Zakat, Corporate Tax, and VAT compliance. Up and running in under 10 minutes.</p>
+      <div class="cta-btns">
+        <a href="mailto:hello@taxcopilot.sa" class="btn-green" style="font-size:15px">🚀 Start Free 30-Day Trial</a>
+        <a href="mailto:demo@taxcopilot.sa" class="btn-outline">Schedule a Demo →</a>
+      </div>
+      <div class="cta-small">No credit card required &nbsp;·&nbsp; Saudi-hosted &nbsp;·&nbsp; ZATCA compliant &nbsp;·&nbsp; Cancel anytime</div>
+
+      <!-- Contact form mock -->
+      <div style="margin-top:48px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:32px;text-align:left">
+        <div style="font-size:15px;font-weight:700;margin-bottom:20px;text-align:center">Or send us a message</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div>
+            <label style="font-size:11px;color:var(--slate-400);display:block;margin-bottom:6px;font-weight:600;letter-spacing:.3px">Full Name</label>
+            <input type="text" placeholder="Ahmed Al-Rashid" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-family:'Sora',sans-serif;font-size:13px;outline:none" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--slate-400);display:block;margin-bottom:6px;font-weight:600;letter-spacing:.3px">Company</label>
+            <input type="text" placeholder="Al-Noor Trading Co." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-family:'Sora',sans-serif;font-size:13px;outline:none" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--slate-400);display:block;margin-bottom:6px;font-weight:600;letter-spacing:.3px">Work Email</label>
+            <input type="email" placeholder="ahmed@company.com.sa" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-family:'Sora',sans-serif;font-size:13px;outline:none" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--slate-400);display:block;margin-bottom:6px;font-weight:600;letter-spacing:.3px">I need help with</label>
+            <select style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#ccc;font-family:'Sora',sans-serif;font-size:13px;outline:none">
+              <option>Zakat Filing</option>
+              <option>Corporate Tax (CIT)</option>
+              <option>VAT Returns</option>
+              <option>Full Compliance Suite</option>
+              <option>Partnership / Reseller</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;padding:13px;font-size:14px">Request Access →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:0">
+          <div class="logo-mark">🛡️</div>
+          <div class="logo-name">Tax<span>Copilot</span></div>
+        </div>
+        <p>AI-powered Zakat, Corporate Tax, and VAT compliance platform for Saudi SMEs. Built for Vision 2030.</p>
+        <div class="compliance-badges">
+          <span class="compliance-badge">ZATCA</span>
+          <span class="compliance-badge">FATOORAH</span>
+          <span class="compliance-badge">SOC 2</span>
+          <span class="compliance-badge">ISO 27001</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#product">Zakat Engine</a>
+        <a href="#product">Corporate Tax</a>
+        <a href="#product">VAT Automation</a>
+        <a href="#product">AI Classification</a>
+        <a href="#product">Risk Scoring</a>
+        <a href="#product">Reports</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#team">About Us</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#contact">Careers</a>
+        <a href="#contact">Press</a>
+        <a href="#contact">Partners</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal & Support</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Data Residency</a>
+        <a href="#contact">Help Center</a>
+        <a href="mailto:hello@taxcopilot.sa">hello@taxcopilot.sa</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 TaxCopilot. All rights reserved. Registered in Saudi Arabia.</p>
+      <p style="color:var(--slate-500)">🇸🇦 Data hosted in Saudi Arabia &nbsp;·&nbsp; ZATCA Partner Program &nbsp;·&nbsp; Vision 2030 Aligned</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Integration logos (render inline from template literal) -->
+<script>
+  const integ = document.querySelector('[style*="justify-content:center;flex-wrap:wrap;gap:12px"]');
+  if(integ && integ.innerHTML.includes('{[')) {
+    const names = ["ZATCA Portal","FATOORAH","SAP","Oracle","Microsoft Dynamics 365","Business Central","QuickBooks","Zoho Books","Xero"];
+    integ.innerHTML = names.map(s =>
+      `<span style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;color:#94A3B8">${s}</span>`
+    ).join('');
+  }
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+  });
+
+  // Simple intersection observer for fade-in on scroll
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.style.opacity = 1; });
+  }, {threshold:0.1});
+  document.querySelectorAll('.card,.module-card,.customer-card,.impact-card,.team-card,.price-card,.roadmap-col').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity .5s ease, transform .22s, box-shadow .22s, border-color .22s';
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
