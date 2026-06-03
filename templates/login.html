@@ -6,16 +6,17 @@
     <h1>Admin Login</h1>
     <p class="muted" style="margin-bottom:16px">Use your admin credentials to manage all TaxCopilot website sections.</p>
     <form method="post" style="display:grid;gap:12px">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
       <div>
         <label>Username</label>
-        <input type="text" name="username" placeholder="admin" required />
+        <input type="text" name="username" placeholder="Enter username" required />
       </div>
       <div>
         <label>Password</label>
         <input type="password" name="password" placeholder="••••••••" required />
       </div>
       <button class="btn primary" type="submit">Sign in</button>
-      <p class="muted" style="font-size:12px">Default local credentials: admin / admin123 (change with ADMIN_USERNAME and ADMIN_PASSWORD env vars).</p>
+      <p class="muted" style="font-size:12px">Set ADMIN_USERNAME and ADMIN_PASSWORD before first run.</p>
     </form>
   </div>
 </section>

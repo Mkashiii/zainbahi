@@ -32,12 +32,9 @@ Open:
 - Website: `http://127.0.0.1:5000/`
 - Admin: `http://127.0.0.1:5000/admin`
 
-## Default admin credentials
+## Admin credentials
 
-- Username: `admin`
-- Password: `admin123`
-
-Set your own securely:
+Set credentials securely before first run:
 
 ```bash
 export ADMIN_USERNAME='your-admin-user'
@@ -45,6 +42,7 @@ export ADMIN_PASSWORD='your-strong-password'
 export FLASK_SECRET_KEY='your-random-secret'
 python app.py
 ```
+`ADMIN_PASSWORD` is required on first run so the initial admin account is created securely.
 
 ## Admin workflow
 

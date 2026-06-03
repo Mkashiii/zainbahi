@@ -1,11 +1,13 @@
 import json
 import os
+import secrets
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import wraps
 from pathlib import Path
 
 from flask import (
+    abort,
     Flask,
     flash,
     g,
@@ -363,7 +365,7 @@ DEFAULT_CONTENT = {
 }
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "change-me-taxcopilot-secret")
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
 app.config["DATABASE"] = str(DB_PATH)
 
 
@@ -372,6 +374,24 @@ def get_db():
         g.db = sqlite3.connect(app.config["DATABASE"])
         g.db.row_factory = sqlite3.Row
     return g.db
+
+
+def utc_now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def get_csrf_token():
+    token = session.get("csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["csrf_token"] = token
+    return token
+
+
+def require_csrf():
+    token = request.form.get("csrf_token", "")
+    if not token or token != session.get("csrf_token"):
+        abort(400, "Invalid CSRF token.")
 
 
 @app.teardown_appcontext
@@ -408,14 +428,18 @@ def init_db():
 
 def seed_admin():
     db = get_db()
-    username = os.environ.get("ADMIN_USERNAME", "admin")
-    password = os.environ.get("ADMIN_PASSWORD", "admin123")
-    existing = db.execute("SELECT id FROM admins WHERE username = ?", (username,)).fetchone()
-    if existing:
+    existing_count = db.execute("SELECT COUNT(*) AS total FROM admins").fetchone()["total"]
+    if existing_count > 0:
         return
+    username = os.environ.get("ADMIN_USERNAME")
+    password = os.environ.get("ADMIN_PASSWORD")
+    if not username or not password:
+        raise RuntimeError(
+            "ADMIN_USERNAME and ADMIN_PASSWORD must be set before first run to create the initial admin account."
+        )
     db.execute(
         "INSERT INTO admins (username, password_hash, created_at) VALUES (?, ?, ?)",
-        (username, generate_password_hash(password), datetime.utcnow().isoformat()),
+        (username, generate_password_hash(password), utc_now()),
     )
     db.commit()
 
@@ -435,7 +459,7 @@ def seed_sections():
                 key,
                 key.replace("_", " ").title(),
                 json.dumps(value, ensure_ascii=False, indent=2),
-                datetime.utcnow().isoformat(),
+                utc_now(),
             ),
         )
     db.commit()
@@ -496,6 +520,7 @@ def index():
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
+        require_csrf()
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
         db = get_db()
@@ -505,11 +530,12 @@ def admin_login():
             session["admin_username"] = admin["username"]
             return redirect(url_for("admin_panel"))
         flash("Invalid username or password.", "error")
-    return render_template("login.html")
+    return render_template("login.html", csrf_token=get_csrf_token())
 
 
 @app.post("/admin/logout")
 def admin_logout():
+    require_csrf()
     session.clear()
     return redirect(url_for("index"))
 
@@ -523,12 +549,15 @@ def admin_panel():
         "sections": db.execute("SELECT COUNT(*) AS total FROM content_sections").fetchone()["total"],
         "admin_users": db.execute("SELECT COUNT(*) AS total FROM admins").fetchone()["total"],
     }
-    return render_template("admin.html", sections=sections, totals=totals)
+    return render_template(
+        "admin.html", sections=sections, totals=totals, csrf_token=get_csrf_token()
+    )
 
 
 @app.post("/admin/section/<section_key>")
 @admin_required
 def update_section(section_key: str):
+    require_csrf()
     payload = request.form.get("section_value", "")
     if not payload.strip():
         flash(f"{section_key}: content cannot be empty.", "error")
@@ -548,7 +577,7 @@ def update_section(section_key: str):
         SET section_value = ?, updated_at = ?
         WHERE section_key = ?
         """,
-        (normalized, datetime.utcnow().isoformat(), section_key),
+        (normalized, utc_now(), section_key),
     )
     db.commit()
     if updated.rowcount == 0:
@@ -561,6 +590,7 @@ def update_section(section_key: str):
 @app.post("/admin/sections/reset")
 @admin_required
 def reset_sections():
+    require_csrf()
     db = get_db()
     db.execute("DELETE FROM content_sections")
     for key, value in DEFAULT_CONTENT.items():
@@ -573,7 +603,7 @@ def reset_sections():
                 key,
                 key.replace("_", " ").title(),
                 json.dumps(value, ensure_ascii=False, indent=2),
-                datetime.utcnow().isoformat(),
+                utc_now(),
             ),
         )
     db.commit()
@@ -594,6 +624,7 @@ def export_sections():
 @app.post("/admin/import")
 @admin_required
 def import_sections():
+    require_csrf()
     uploaded = request.files.get("content_file")
     if not uploaded or not uploaded.filename:
         flash("Please upload a JSON file.", "error")
@@ -621,7 +652,7 @@ def import_sections():
             continue
         db.execute(
             "UPDATE content_sections SET section_value = ?, updated_at = ? WHERE section_key = ?",
-            (json.dumps(value, ensure_ascii=False, indent=2), datetime.utcnow().isoformat(), key),
+            (json.dumps(value, ensure_ascii=False, indent=2), utc_now(), key),
         )
         updated_count += 1
 
@@ -631,4 +662,8 @@ def import_sections():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true",
+    )

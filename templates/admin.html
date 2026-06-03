@@ -10,9 +10,11 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <a class="btn" href="{{ url_for('export_sections') }}">Export JSON</a>
       <form method="post" action="{{ url_for('reset_sections') }}" onsubmit="return confirm('Reset all content to defaults?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <button class="btn danger" type="submit">Reset Defaults</button>
       </form>
       <form method="post" action="{{ url_for('admin_logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <button class="btn" type="submit">Logout</button>
       </form>
     </div>
@@ -27,6 +29,7 @@
   <div class="card" style="margin-top:16px">
     <h3>Import content</h3>
     <form method="post" action="{{ url_for('import_sections') }}" enctype="multipart/form-data" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
       <input type="file" name="content_file" accept="application/json" required />
       <button class="btn success" type="submit">Import JSON</button>
     </form>
@@ -40,6 +43,7 @@
           <span class="muted" style="font-size:12px">Updated {{ section.updated_at }}</span>
         </summary>
         <form method="post" action="{{ url_for('update_section', section_key=section.key) }}" style="display:grid;gap:10px;margin-top:12px">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
           <label class="muted" style="font-size:13px">Section key: {{ section.key }}</label>
           <textarea rows="14" name="section_value">{{ section.value }}</textarea>
           <button class="btn primary" type="submit">Save {{ section.label }}</button>
