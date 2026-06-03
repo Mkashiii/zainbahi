@@ -1,16 +1,22 @@
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict
 
-from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "taxcopilot.db"
+APP_ENV = os.environ.get("APP_ENV", "development").lower()
+# Default reflects 85g gold equivalent in SAR for nisab checks and should be updated as regulations/market values change.
+NISAB_THRESHOLD_SAR = float(os.environ.get("NISAB_THRESHOLD_SAR", "20785"))
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "taxcopilot-dev-secret")
+secret_key = os.environ.get("SECRET_KEY")
+if APP_ENV != "development" and not secret_key:
+    raise RuntimeError("SECRET_KEY environment variable is required outside development.")
+app.config["SECRET_KEY"] = secret_key or os.urandom(32).hex()
 
 
 DEFAULT_MODULES = [
@@ -63,6 +69,10 @@ def get_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def init_db() -> None:
@@ -129,7 +139,7 @@ def init_db() -> None:
 
         existing = conn.execute("SELECT COUNT(*) AS c FROM modules").fetchone()["c"]
         if existing == 0:
-            now = datetime.utcnow().isoformat()
+            now = utc_now_iso()
             conn.executemany(
                 """
                 INSERT INTO modules (code, name, description, rate, ownership_scope, created_at)
@@ -147,7 +157,7 @@ def to_float(raw: str, default: float = 0.0) -> float:
 
 
 def calculate_zakat(payload: Dict[str, float]) -> Dict[str, float]:
-    nisab_threshold = 20785.0
+    nisab_threshold = NISAB_THRESHOLD_SAR
     zakatable_assets = payload.get("zakatable_assets", 0.0)
     deductible_liabilities = payload.get("deductible_liabilities", 0.0)
     saudi_ownership = payload.get("saudi_ownership", 100.0)
@@ -204,6 +214,12 @@ CALCULATORS = {
     "vat": calculate_vat,
 }
 
+MODULE_INPUT_KEYS = {
+    "zakat": {"zakatable_assets", "deductible_liabilities", "saudi_ownership"},
+    "cit": {"ebt", "addbacks", "deductions", "foreign_ownership"},
+    "vat": {"output_vat", "input_vat", "partial_exemption_ratio"},
+}
+
 
 @app.route("/")
 def index():
@@ -218,10 +234,11 @@ def create_contact():
         "email": request.form.get("email", "").strip(),
         "help_topic": request.form.get("help_topic", "").strip(),
         "message": request.form.get("message", "").strip(),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": utc_now_iso(),
     }
 
     if not all([payload["full_name"], payload["company"], payload["email"], payload["help_topic"]]):
+        flash("Please complete all required contact fields.", "error")
         return redirect(url_for("index") + "#contact")
 
     with get_connection() as conn:
@@ -233,6 +250,7 @@ def create_contact():
             payload,
         )
 
+    flash("Your message was submitted successfully.", "success")
     return redirect(url_for("index") + "#contact")
 
 
@@ -244,7 +262,8 @@ def calculate_tax(module_code: str):
         return jsonify({"error": "Unsupported module code"}), 400
 
     body = request.get_json(silent=True) or {}
-    numeric_payload = {key: to_float(value) for key, value in body.items()}
+    allowed_keys = MODULE_INPUT_KEYS[module_code]
+    numeric_payload = {key: to_float(body.get(key)) for key in allowed_keys}
     result = calculator(numeric_payload)
     return jsonify({"module": module_code, "result": result})
 
@@ -256,6 +275,7 @@ def create_efile_submission():
     period_label = request.form.get("period_label", "").strip()
 
     if module_code not in CALCULATORS or not company_name or not period_label:
+        flash("E-file submission requires company, period, and a valid module.", "error")
         return redirect(url_for("admin_dashboard"))
 
     calc_input = {
@@ -291,7 +311,7 @@ def create_efile_submission():
         "hijri_deadline": request.form.get("hijri_deadline", "").strip() or None,
         "status": request.form.get("status", "submitted").strip() or "submitted",
         "notes": request.form.get("notes", "").strip(),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": utc_now_iso(),
     }
 
     with get_connection() as conn:
@@ -308,6 +328,7 @@ def create_efile_submission():
             filing_payload,
         )
 
+    flash("E-file record created.", "success")
     return redirect(url_for("admin_dashboard"))
 
 
@@ -338,10 +359,11 @@ def add_module():
         "description": request.form.get("description", "").strip(),
         "rate": to_float(request.form.get("rate")),
         "ownership_scope": request.form.get("ownership_scope", "entity").strip(),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": utc_now_iso(),
     }
 
     if not all([payload["code"], payload["name"], payload["description"]]):
+        flash("Module code, name, and description are required.", "error")
         return redirect(url_for("admin_dashboard"))
 
     with get_connection() as conn:
@@ -358,6 +380,7 @@ def add_module():
             payload,
         )
 
+    flash("Module saved successfully.", "success")
     return redirect(url_for("admin_dashboard"))
 
 
@@ -372,6 +395,7 @@ def toggle_module(module_id: int):
             """,
             (module_id,),
         )
+    flash("Module status updated.", "success")
     return redirect(url_for("admin_dashboard"))
 
 
@@ -384,10 +408,11 @@ def add_risk():
         "score": int(to_float(request.form.get("score"), 0.0)),
         "description": request.form.get("description", "").strip(),
         "remediation": request.form.get("remediation", "").strip(),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": utc_now_iso(),
     }
 
     if not all([payload["company_name"], payload["module_code"], payload["description"]]):
+        flash("Risk entry requires company, module, and description.", "error")
         return redirect(url_for("admin_dashboard"))
 
     with get_connection() as conn:
@@ -399,6 +424,7 @@ def add_risk():
             payload,
         )
 
+    flash("Risk record added.", "success")
     return redirect(url_for("admin_dashboard"))
 
 
@@ -409,10 +435,11 @@ def add_report():
         "report_type": request.form.get("report_type", "").strip(),
         "format": request.form.get("format", "PDF").strip(),
         "status": request.form.get("status", "Generated").strip(),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": utc_now_iso(),
     }
 
     if not all([payload["company_name"], payload["report_type"]]):
+        flash("Report entry requires company and report type.", "error")
         return redirect(url_for("admin_dashboard"))
 
     with get_connection() as conn:
@@ -424,11 +451,16 @@ def add_report():
             payload,
         )
 
+    flash("Report record added.", "success")
     return redirect(url_for("admin_dashboard"))
 
 
 if __name__ == "__main__":
     init_db()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(
+        host=os.environ.get("FLASK_HOST", "127.0.0.1"),
+        port=int(os.environ.get("PORT", "5000")),
+        debug=os.environ.get("FLASK_DEBUG") == "1",
+    )
 else:
     init_db()

@@ -17,6 +17,18 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-10">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="space-y-2">
+          {% for category, message in messages %}
+            <div class="rounded-md px-4 py-3 text-sm {{ 'bg-red-500/20 border border-red-400/40 text-red-100' if category == 'error' else 'bg-emerald-500/20 border border-emerald-400/40 text-emerald-100' }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
     <section class="grid lg:grid-cols-2 gap-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-lg font-semibold mb-4">Add / Update Module</h2>

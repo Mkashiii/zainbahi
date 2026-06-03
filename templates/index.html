@@ -952,6 +952,18 @@ footer{background:var(--navy-900);border-top:1px solid rgba(255,255,255,.07);pad
       </div>
       <div class="cta-small">No credit card required &nbsp;·&nbsp; Saudi-hosted &nbsp;·&nbsp; ZATCA compliant &nbsp;·&nbsp; Cancel anytime</div>
 
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            {% for category, message in messages %}
+              <div style="padding:10px 14px;border-radius:10px;font-size:13px;{{ 'background:rgba(229,62,62,.12);border:1px solid rgba(229,62,62,.35);color:#FECACA' if category == 'error' else 'background:rgba(14,170,114,.15);border:1px solid rgba(14,170,114,.35);color:#A8F0CE' }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
       <form method="post" action="/contact" style="margin-top:48px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:32px;text-align:left">
         <div style="font-size:15px;font-weight:700;margin-bottom:20px;text-align:center">Or send us a message</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">

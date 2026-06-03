@@ -16,6 +16,7 @@ This repository now includes a Python backend that serves the frontend template 
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+export APP_ENV=development
 python app.py
 ```
 
@@ -23,6 +24,8 @@ Open:
 
 - Frontend: `http://127.0.0.1:5000/`
 - Admin panel: `http://127.0.0.1:5000/admin`
+
+For non-development deployment, set a strong `SECRET_KEY` environment variable.
 
 ## API example
 
