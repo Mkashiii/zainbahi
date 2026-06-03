@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login • TaxCopilot{% endblock %}
+{% block content %}
+<section class="section" style="max-width:520px;margin:20px auto">
+  <div class="card">
+    <h1>Admin Login</h1>
+    <p class="muted" style="margin-bottom:16px">Use your admin credentials to manage all TaxCopilot website sections.</p>
+    <form method="post" style="display:grid;gap:12px">
+      <div>
+        <label>Username</label>
+        <input type="text" name="username" placeholder="admin" required />
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button class="btn primary" type="submit">Sign in</button>
+      <p class="muted" style="font-size:12px">Default local credentials: admin / admin123 (change with ADMIN_USERNAME and ADMIN_PASSWORD env vars).</p>
+    </form>
+  </div>
+</section>
+{% endblock %}

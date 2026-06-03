@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel • TaxCopilot{% endblock %}
+{% block content %}
+<section class="section">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div>
+      <h1>Full Site Admin Panel</h1>
+      <p class="muted">Manage every website section from one place (JSON-powered CMS).</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn" href="{{ url_for('export_sections') }}">Export JSON</a>
+      <form method="post" action="{{ url_for('reset_sections') }}" onsubmit="return confirm('Reset all content to defaults?')">
+        <button class="btn danger" type="submit">Reset Defaults</button>
+      </form>
+      <form method="post" action="{{ url_for('admin_logout') }}">
+        <button class="btn" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid cols-3" style="margin-top:16px">
+    <div class="card"><div class="muted">Sections managed</div><div style="font-size:32px;font-weight:800">{{ totals.sections }}</div></div>
+    <div class="card"><div class="muted">Admin users</div><div style="font-size:32px;font-weight:800">{{ totals.admin_users }}</div></div>
+    <div class="card"><div class="muted">Panel mode</div><div style="font-size:32px;font-weight:800">Live</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Import content</h3>
+    <form method="post" action="{{ url_for('import_sections') }}" enctype="multipart/form-data" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input type="file" name="content_file" accept="application/json" required />
+      <button class="btn success" type="submit">Import JSON</button>
+    </form>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    {% for section in sections %}
+      <details class="card" {% if loop.first %}open{% endif %}>
+        <summary style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;list-style:none">
+          <strong>{{ section.label }}</strong>
+          <span class="muted" style="font-size:12px">Updated {{ section.updated_at }}</span>
+        </summary>
+        <form method="post" action="{{ url_for('update_section', section_key=section.key) }}" style="display:grid;gap:10px;margin-top:12px">
+          <label class="muted" style="font-size:13px">Section key: {{ section.key }}</label>
+          <textarea rows="14" name="section_value">{{ section.value }}</textarea>
+          <button class="btn primary" type="submit">Save {{ section.label }}</button>
+        </form>
+      </details>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
