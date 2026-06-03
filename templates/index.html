@@ -46,7 +46,7 @@
     <div class="card">
       <h2>The Problem</h2>
       <p class="muted">{{ content.problem.intro }}</p>
-      <ul style="margin-top:12px">{% for item in content.problem.items %}<li>{{ item }}</li>{% endfor %}</ul>
+      <ul style="margin-top:12px">{% for item in content.problem['items'] %}<li>{{ item }}</li>{% endfor %}</ul>
     </div>
     <div class="card">
       <h2>The Solution</h2>
